@@ -7,11 +7,15 @@ $ vim /etc/default/grub
 GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"
 ```
 
-## Renaming interface
+## Renaming interface (temporary)
 Rename target interface to `wlan1` instead of systemd generated name.
 ```bash
-$ vim /etc/udev/rules.d/10-network-device.rules
-SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="AC:65:21:B7:2E:60", ATTR{dev_id}=="0x0", ATTR{type}=="1", KERNEL=="eth*", NAME="wlan1"
+$ iwconfig | grep wlx
+wlx9cefd5fd1181  IEEE 802.11  ESSID:off/any 
+$ ip link wlx9cefd5fd1181 down
+$ ip link set wlx9cefd5fd1181 down
+$ ip link set wlx9cefd5fd1181 name wlan1
+$ ip link set wlan1 up
 $ systemctl restart network-manager.service
 ```
 
