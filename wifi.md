@@ -12,7 +12,6 @@ Rename target interface to `wlan1` instead of systemd generated name.
 ```bash
 $ iwconfig | grep wlx
 wlx9cefd5fd1181  IEEE 802.11  ESSID:off/any 
-$ ip link wlx9cefd5fd1181 down
 $ ip link set wlx9cefd5fd1181 down
 $ ip link set wlx9cefd5fd1181 name wlan1
 $ ip link set wlan1 up
