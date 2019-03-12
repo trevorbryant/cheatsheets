@@ -6,6 +6,11 @@ I was having issues with the external card until adjusting the below.
 $ vim /etc/default/grub
 GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"
 ```
+## airmon-ng
+Set interface to monitor mode.
+```bash
+$ airmon-ng start wlan1
+```
 
 ## airodump-ng
 Find surrounding networks, access points and clients
