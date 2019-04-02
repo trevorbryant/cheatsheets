@@ -22,6 +22,7 @@ $ ip link set wlx9cefd5fd1181 name wlan1
 $ ip link set wlan1 up
 $ systemctl restart network-manager.service
 ```
+[Understanding systemd’s predictable network device names](https://major.io/2015/08/21/understanding-systemds-predictable-network-device-names/)
 
 ## airodump-ng
 Find surrounding networks, access points and clients
