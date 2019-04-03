@@ -6,10 +6,21 @@ I was having issues with the external card until adjusting the below.
 $ vim /etc/default/grub
 GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"
 ```
+
 ## airmon-ng
+Checking and kill networking services.
+```
+$ airmon-ng check kill
+```
+
 Set interface to monitor mode.
 ```bash
 $ airmon-ng start wlan1
+```
+Stop monitor mode and start networking.
+```
+$ airmon-ng stop wlan1
+$ systemctl restart network-manager.service
 ```
 
 ## Renaming interface (temporary)
@@ -65,7 +76,7 @@ Set attack mode [deauthentication](https://www.aircrack-ng.org/doku.php?id=deaut
   - `--deauth` Set `deauth` count
   - `-e` Target access point ESSID
   - `-a` Target access point MAC address
-  - `-c` Set desitnation MAC address
+  - `-c` Set destination MAC address
 ```bash
 $ aireplay-ng --deauth 5 -e access_point -a A0:21:B7:60:2E:65 -c AC:65:21:B7:2E:60 wlan1
 ```
