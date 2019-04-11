@@ -1,15 +1,15 @@
-# Notes on wifi configs and setup
+# Always Be Collecting
 
 ## Getting started
 
-Check the wireless interface(s) with `iwconfig` and start monitoring mode.
+Check the wireless interface(s) with iwconfig` and start monitoring mode.
 ```
 $ airmon-ng start wlx9cefd5fd1181
 ```
 
 Verify that [injection tests](https://www.aircrack-ng.org/doku.php?id=injection_test) work.
 ```
-$ aireplay-ng -9 -e dd-wrt wlan0mon
+$ aireplay-ng -9 -e ap_name wlan0mon
 ```
 
 Find surrounding networks, access points and clients
@@ -151,4 +151,5 @@ $ systemctl restart network-manager.service
 [Understanding systemd’s predictable network device names](https://major.io/2015/08/21/understanding-systemds-predictable-network-device-names/)
 
 ## Sources
+[Tutorials](https://www.aircrack-ng.org/doku.php?id=tutorial)
 [Aircrack-ng Newbie Guide for Linux](https://www.aircrack-ng.org/doku.php?id=newbie_guide)
