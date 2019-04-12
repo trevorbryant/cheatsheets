@@ -34,7 +34,7 @@ Steps to perform an attack on a WEP access point with no associated clients.
   4) If #3 is not working, run chopchop attack.
   5) Create arp packet with `packetforge-ng`.
   6) Inject the arp packet using `aireplay-ng -2`.
-  
+  7) Run `aircrack-ng` to obtain the WEP key. 
 
 ## aircrack-ng
 Begin cracking IVS file on target BSSID (can perform while airodump-ng is writing).
@@ -153,3 +153,4 @@ $ systemctl restart network-manager.service
 ## Sources
 [Tutorials](https://www.aircrack-ng.org/doku.php?id=tutorial)
 [Aircrack-ng Newbie Guide for Linux](https://www.aircrack-ng.org/doku.php?id=newbie_guide)
+[Tutorial: How to crack WEP with no wireless clients](https://www.aircrack-ng.org/doku.php?id=how_to_crack_wep_with_no_clients)
