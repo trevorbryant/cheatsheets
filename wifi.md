@@ -65,6 +65,18 @@ $ airmon-ng check kill
 ```
 
 ## aireplay-ng
+
+### Quick summary
+Attack modes (Numbers can still be used):
+
+  - `--deauth`or `-0`
+  - `--fakeauth` or `-1`
+  - `--interactive`or 2`
+  - `--arpreplay` or `-3`
+  - `--chopchop` or `-4`
+  - `--fragment` or `-5`
+  - `--test` or `-9`
+
 ### Deauthentication
 Set attack mode [Deauthentication](https://www.aircrack-ng.org/doku.php?id=deauthentication).
   - `-0` Set for `deauthentication` mode
