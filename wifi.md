@@ -27,14 +27,20 @@ $ airodump-ng -c 6 --bssid E0:05:C5:60:2E:65 --ivs -w capture wlan0mon
 ```
 
 ### WEP without clients
-Steps to perform an attack on a WEP access point with no associated clients.
+Steps to perform an attack on a WEP access point with no associated clients. The access point must be broadcasting data for this to work.
   1) Monitor and capture the target network traffic using `airodump-ng`.
   2) In a new console execute Fake Authentication attack method.
   3) In a new console execute Fragmentation attack method and wait.
   4) If #3 is not working, run chopchop attack.
-  5) Create arp packet with `packetforge-ng`.
+  5) Create an arp packet with `packetforge-ng`.
   6) Inject the arp packet using `aireplay-ng -2`.
   7) Run `aircrack-ng` to obtain the WEP key. 
+
+### WPA/WPA2 with clients
+Steps to perform an attack on a WPA/WPA2 access point with clients. There is a bug in versions older than 1.5 where this will fail.
+  1) Monitor and capture the target network traffic using `airodump-ng`.
+  2) In a new console execute Deauthentication attack method on associated client(s).
+  3) Run `aircrack-ng` to obtain the pre-shared key.
 
 ### aircrack-ng
 Begin cracking IVS file on target BSSID (can perform while airodump-ng is writing).
