@@ -158,6 +158,11 @@ Loop deauthentication attack to target client.
 for s in `seq 1 1000`; do sleep 1 && aireplay-ng -0 1 -e ap_name -a ap_mac -c $i wlan0mon; done
 ```
 
+#### Regex
+Filter target ESSID's.
+```bash
+airodump-ng wlan0mon --essid-regex "^(ap_name).*$"
+```
 
 #### Renaming interface (temporary)
 Rename target interface to `wlan1` instead of systemd generated name.
