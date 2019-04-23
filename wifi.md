@@ -37,10 +37,12 @@ Steps to perform an attack on a WEP access point with no associated clients. The
   7) Run `aircrack-ng` to obtain the WEP key. 
 
 ### WPA/WPA2 with clients
-Steps to perform an attack on a WPA/WPA2 access point with clients. There is a bug in versions older than 1.5 where this will fail.
+Steps to perform an attack on a WPA/WPA2 access point with clients. The pre-shared (PSK) must be in the wordlists used.
+
+There is a bug in versions older than 1.5 where this will fail.
   1) Monitor and capture the target network traffic using `airodump-ng`.
   2) In a new console execute Deauthentication attack method on associated client(s).
-  3) Run `aircrack-ng` to obtain the pre-shared key.
+  3) Run `aircrack-ng` to obtain the PSK.
 
 ### aircrack-ng
 Begin cracking IVS file on target BSSID (can perform while airodump-ng is writing).
