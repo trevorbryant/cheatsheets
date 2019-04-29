@@ -79,7 +79,7 @@ Attack modes (Numbers can still be used):
 
   - `--deauth`or `-0`
   - `--fakeauth` or `-1`
-  - `--interactive`or `2`
+  - `--interactive`or `-2`
   - `--arpreplay` or `-3`
   - `--chopchop` or `-4`
   - `--fragment` or `-5`
