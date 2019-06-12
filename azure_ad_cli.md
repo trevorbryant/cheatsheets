@@ -39,12 +39,22 @@ az ad group list
 az ad group show --group "azure-objectid-identifiers-1a2b3c"
 ```
 
-## JSON Usage
-Using json output for targed attributes.
+## Query Usage
+Using json example output for targed attributes.
 ```bash
 az ad user show --upn-or-object-id first.last@contoso.com --query '{name:displayName, UPN:userPrincipalName}' -o json
 {
   "UPN": "first.last@consoto.com",
   "name": "first last"
+}
+```
+All user objects
+```bash
+az ad user show --upn-or-object-id first.last@contoso.com --query '[].{name:displayName, UPN:userPrincipalName}' -o json
+{
+  "UPN": "first.last@consoto.com",
+  "name": "first last",
+  "UPN": "first.last@consoto.com",
+  "name": "first last", 
 }
 ```
