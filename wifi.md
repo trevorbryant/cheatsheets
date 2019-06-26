@@ -2,6 +2,20 @@
 
 ## Procedures, Notes, and Tips
 
+### Network Manager CLI
+Using [nmcli](https://manpages.ubuntu.com/manpages/bionic/en/man1/nmcli.1.html) to list and connect to wifi networks.
+
+List the available networks.
+```bash
+$ nmcli d wifi list
+```
+
+Connect to the available network.
+```bash
+$ nmcli c up ap-name
+```
+
+### Collecting and Cracking
 Check the wireless interface(s) with iwconfig` and start monitoring mode.
 ```
 $ airmon-ng start wlx9cefd5fd1181
