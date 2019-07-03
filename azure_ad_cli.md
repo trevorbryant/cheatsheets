@@ -50,7 +50,7 @@ az ad user show --upn-or-object-id first.last@contoso.com --query '{name:display
 ```
 All user objects
 ```bash
-az ad user show --upn-or-object-id first.last@contoso.com --query '[].{name:displayName, UPN:userPrincipalName}' -o json
+az ad user list --query '[].{name:displayName, UPN:userPrincipalName}' -o json
 {
   "UPN": "first.last@consoto.com",
   "name": "first last",
