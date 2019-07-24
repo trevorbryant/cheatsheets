@@ -57,4 +57,17 @@ az ad user list --query '[].{name:displayName, UPN:userPrincipalName}' -o json
   "UPN": "first.last@consoto.com",
   "name": "first last", 
 }
+
+```
+
+## Install Azure DevOps
+Add the `azure-devops` extension
+```bash
+az extension add --name azure-devops
+```
+
+## Configure project
+Configure and add project
+```bash
+az devops configure --defaults organization=https://dev.azure.com/contoso project=ContosoWebApp
 ```
