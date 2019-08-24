@@ -1,5 +1,30 @@
 # Always Be Collecting
 
+* [Always Be Collecting](#always-be-collecting)
+* [Procedures, Notes, and Tips](#procedures-notes-and-tips)
+  * [Network Manager CLI](#network-manager-cli-1)
+  * [Collecting and Cracking](#collecting-and-cracking-1)
+  * [WEP without clients](#wep-without-clients-1)
+  * [WPA/WPA2 with clients](#wpawpa2-with-clients-1)
+  * [aircrack-ng](#aircrack-ng-1)
+  * [airmon-ng](#airmon-ng-1)
+  * [aireplay-ng](#aireplay-ng-1)
+     * [Quick summary](#quick-summary-1)
+     * [Deauthentication](#deauthentication-1)
+     * [Fake Authentication](#fake-authentication-1)
+     * [Interactive packet replay](#interactive-packet-replay-1)
+     * [ARP request replay attack](#arp-request-replay-attack-1)
+     * [KoreK chopchop attack](#korek-chopchop-attack-1)
+     * [Fragmentation attack](#fragmentation-attack-1)
+     * [packetforge-ng](#packetforge-ng-1)
+  * [Quick &amp; Useful](#quick--useful-1)
+     * [Loops](#loops-1)
+     * [Regex](#regex-1)
+     * [Force Channel](#force-channel-1)
+     * [Renaming interface (temporary)](#renaming-interface-temporary-1)
+     * [Wireshark &amp; tshark](#wireshark--tshark-1)
+* [Sources](#sources-1)
+
 ## Procedures, Notes, and Tips
 
 ### Network Manager CLI
@@ -48,7 +73,7 @@ Steps to perform an attack on a WEP access point with no associated clients. The
   4) If #3 is not working, run chopchop attack.
   5) Create an arp packet with `packetforge-ng`.
   6) Inject the arp packet using `aireplay-ng -2`.
-  7) Run `aircrack-ng` to obtain the WEP key. 
+  7) Run `aircrack-ng` to obtain the WEP key.
 
 ### WPA/WPA2 with clients
 Steps to perform an attack on a WPA/WPA2 access point with clients. The pre-shared (PSK) must be in the wordlists used.
@@ -170,7 +195,7 @@ Generate packets for injection from PRGA capture.
   - `-w` Write to file
 ```bash
 packetforge-ng -0 -a ap_mac -h our_mac -k 255.255.255.255 -l 255.255.255.255 -y file.xor -w arp-request
-``` 
+```
 
 ### Quick & Useful
 
@@ -196,13 +221,12 @@ $ iwconfig wlan1mon 6
 Rename target interface to `wlan1` instead of systemd generated name.
 ```bash
 $ iwconfig | grep wlx
-wlx9cefd5fd1181  IEEE 802.11  ESSID:off/any 
+wlx9cefd5fd1181  IEEE 802.11  ESSID:off/any
 $ ip link set wlx9cefd5fd1181 down
 $ ip link set wlx9cefd5fd1181 name wlan1
 $ ip link set wlan1 up
 $ systemctl restart network-manager.service
 ```
-[Understanding systemd’s predictable network device names](https://major.io/2015/08/21/understanding-systemds-predictable-network-device-names/)
 
 #### Wireshark & tshark
 Using Wireshark to filter target packets.
@@ -216,6 +240,7 @@ $ tshark -r filter.pcap -R "(wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtyp
 ```
 
 ## Sources
-[Tutorials](https://www.aircrack-ng.org/doku.php?id=tutorial)
-[Aircrack-ng Newbie Guide for Linux](https://www.aircrack-ng.org/doku.php?id=newbie_guide)
-[Tutorial: How to crack WEP with no wireless clients](https://www.aircrack-ng.org/doku.php?id=how_to_crack_wep_with_no_clients)
+ * [Tutorials](https://www.aircrack-ng.org/doku.php?id=tutorial)
+ * [Aircrack-ng Newbie Guide for Linux](https://www.aircrack-ng.org/doku.php?id=newbie_guide)
+ * [Tutorial: How to crack WEP with no wireless clients](https://www.aircrack-ng.org/doku.php?id=how_to_crack_wep_with_no_clients)
+ * [Understanding systemd’s predictable network device names](https://major.io/2015/08/21/understanding-systemds-predictable-network-device-names/)
