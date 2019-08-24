@@ -186,6 +186,12 @@ Filter target ESSID's.
 airodump-ng wlan0mon --essid-regex "^(ap_name).*$"
 ```
 
+#### Force Channel
+Force wireless interface to a specific channel. Good for injection card.
+```bash
+$ iwconfig wlan1mon 6
+```
+
 #### Renaming interface (temporary)
 Rename target interface to `wlan1` instead of systemd generated name.
 ```bash
@@ -197,6 +203,17 @@ $ ip link set wlan1 up
 $ systemctl restart network-manager.service
 ```
 [Understanding systemd’s predictable network device names](https://major.io/2015/08/21/understanding-systemds-predictable-network-device-names/)
+
+#### Wireshark & tshark
+Using Wireshark to filter target packets.
+```bash
+wlan.addr == target_mac && wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol
+```
+
+Using tshark to create the next thing for aircrack.
+```bash
+$ tshark -r filter.pcap -R "(wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol) && wlan.addr == ap_mac" -2
+```
 
 ## Sources
 [Tutorials](https://www.aircrack-ng.org/doku.php?id=tutorial)
