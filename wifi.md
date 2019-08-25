@@ -234,7 +234,7 @@ Using Wireshark to filter target packets.
 wlan.addr == target_mac && wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol
 ```
 
-Using tshark to create the next thing for aircrack.
+Using tshark to extract the handshakes..
 ```bash
 $ tshark -r filter.pcap -R "(wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol) && wlan.addr == ap_mac" -2
 ```
