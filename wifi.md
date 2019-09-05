@@ -1,4 +1,5 @@
 # Always Be Collecting
+[install_pentoo](https://www.pentoo.ch/download/)
 
 * [Always Be Collecting](#always-be-collecting)
 * [Procedures, Notes, and Tips](#procedures-notes-and-tips)
