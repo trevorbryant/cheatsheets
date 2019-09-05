@@ -17,6 +17,8 @@
     * [KoreK chopchop attack](#korek-chopchop-attack)
     * [Fragmentation attack](#fragmentation-attack)
     * [packetforge-ng](#packetforge-ng)
+  * [pyrit](#pyrit)
+  * [wifite](#wifite)
 * [Quick &amp; Useful](#quick--useful)
   * [Loops](#loops)
   * [Regex](#regex)
@@ -191,6 +193,15 @@ $ aireplay-ng -5 -b ap_mac -h our_mac wlan0mon
 
 #### packetforge-ng
 Generate packets for injection from PRGA capture.
+
+Summary of different modes:
+  - `--arp` or `-0` for ARP packet
+  - `--udp` or `-1` for UDP packet
+  - `--icmp` or `-2` for ICMP packet
+  - `--null` or `-3` for a null packet
+  - `--custom` or `-9` for a custom packet
+
+Additional example:
   - `-0` Set for generate arp packet
   - `-a` Target access point MAC address
   - `-h` Our wireless card's MAC address
@@ -202,6 +213,34 @@ Generate packets for injection from PRGA capture.
 packetforge-ng -0 -a ap_mac -h our_mac -k 255.255.255.255 -l 255.255.255.255 -y file.xor -w arp-request
 ```
 
+### pyrit
+[pyrit](https://tools.kali.org/wireless-attacks/pyrit) is a WPA/WPA2-PSK tool that allows for creating a large database for authentication and cracking.
+
+Analyze a packet capture file.
+```bash
+pyrit -r capture.cap analyze
+```
+
+Import passwords from a file into the database.
+```bash
+pyrit -i /usr/share/wordlists/spy_vs_spy.words import_passwords
+```
+Create a new ESSID (or `-b` for BSSID) into the database.
+```bash
+pyrit -e "access_point" create_essid
+```
+Batch process the database.
+```bash
+pyrit batch
+```
+
+Attack all handshakes from the database.
+```bash
+pyrit -r capture.cap --all-handshakes attack_db
+```
+
+### wifite
+[wifite](https://github.com/derv82/wifite2) is a tool that automates the process. Follow the instructions to cheat.
 ## Quick & Useful
 
 ### Loops
