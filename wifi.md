@@ -50,7 +50,7 @@ $ nmtui
 ### Collecting and Cracking
 Check the wireless interface(s) with `iwconfig` and start monitoring mode.
 ```
-$ airmon-ng start wlx9cefd5fd1181
+$ airmon-ng start wlx123456790
 ```
 
 Verify that [injection tests](https://www.aircrack-ng.org/doku.php?id=injection_test) work.
@@ -76,11 +76,10 @@ $ airodump-ng -c 6 --bssid E0:05:C5:60:2E:65 --ivs -w capture wlan0mon
 Steps to perform an attack on a WEP access point with no associated clients. The access point must be broadcasting data for this to work.
   1) Monitor and capture the target network traffic using `airodump-ng`.
   2) In a new console execute Fake Authentication attack method.
-  3) In a new console execute Fragmentation attack method and wait.
-  4) If #3 is not working, run chopchop attack.
-  5) Create an arp packet with `packetforge-ng`.
-  6) Inject the arp packet using `aireplay-ng -2`.
-  7) Run `aircrack-ng` to obtain the WEP key.
+  3) In a new console execute Fragmentation or chopchop attack methods.
+  4) Create an arp packet with `packetforge-ng`.
+  5) Inject the arp packet using `aireplay-ng -2`.
+  6) Run `aircrack-ng` to obtain the WEP key.
 
 ### WPA/WPA2 with clients
 Steps to perform an attack on a WPA/WPA2 access point with clients. The pre-shared (PSK) must be in the wordlists used.
