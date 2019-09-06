@@ -69,8 +69,9 @@ Begin collection on target channel, BSSID and recording to file.
   - `-w` Write to file
   - `--bssid` MAC address of access point
   - `--ivs` Save only captured IVs (optional)
+  - `--band` Select the wireless band. 'b' and 'g' uses 2.4GHz and 'a' uses 5GHz.
 ```bash
-$ airodump-ng -c 6 --bssid E0:05:C5:60:2E:65 --ivs -w capture wlan0mon
+$ airodump-ng -c 6 --bssid E0:05:C5:60:2E:65 --ivs --band a -w capture wlan0mon
 ```
 
 ### WEP without clients
