@@ -242,6 +242,7 @@ $ pyrit -r capture.cap --all-handshakes attack_db
 
 ### wifite
 [wifite](https://github.com/derv82/wifite2) is a tool that automates the process. Follow the instructions to cheat.
+
 ## Quick & Useful
 
 ### Loops
@@ -251,7 +252,7 @@ $ for s in `seq 1 1000`; do sleep 1 && aireplay-ng -0 1 -e ap_name -a ap_mac -c 
 ```
 
 ### Regex
-Filter target ESSID's.
+Filter target ESSIDs.
 ```bash
 $ airodump-ng wlan0mon --essid-regex "^(ap_name).*$"
 $ airodump-ng wlan0mon --essid-regex ^.*(one|two|three).*$
@@ -261,17 +262,21 @@ $ airodump-ng wlan0mon --essid-regex ^.*(one|two|three).*$
 Force wireless interface to a specific channel. Good for injection card.
 ```bash
 $ iwconfig wlan1mon channel 6
+$ iwconfig wlan1mon channel 136
 ```
 
-### Renaming interface (temporary)
-Rename target interface to `wlan1` instead of systemd generated name.
+### Configure interface
+Set link up/down.
 ```bash
-$ iwconfig | grep wlx
-wlx9cefd5fd1181  IEEE 802.11  ESSID:off/any
-$ ip link set wlx9cefd5fd1181 down
-$ ip link set wlx9cefd5fd1181 name wlan1
-$ ip link set wlan1 up
-$ systemctl restart network-manager.service
+$ ip link set wlan0mon down
+$ ip link set wlan0mon up
+```
+
+Set modes monitor or managed. 
+```bash
+$ iwconfig wlan0mon mode managed
+$ iwconfig wlan0mon mode monitor
+
 ```
 
 ### Wireshark & tshark
@@ -280,7 +285,7 @@ Using Wireshark to filter target packets.
 wlan.addr == target_mac && wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol
 ```
 
-Using tshark to extract the handshakes..
+Using tshark to extract the handshakes.
 ```bash
 $ tshark -r filter.pcap -R "(wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol) && wlan.addr == ap_mac" -2
 ```
