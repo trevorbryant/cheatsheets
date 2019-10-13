@@ -19,17 +19,16 @@
     * [Fragmentation attack](#fragmentation-attack)
     * [packetforge-ng](#packetforge-ng)
   * [pyrit](#pyrit)
+  * [hcxdumptoo](#hcxdumptool)
   * [wifite](#wifite)
 * [Quick &amp; Useful](#quick--useful)
   * [Loops](#loops)
   * [Regex](#regex)
   * [Configure interface](#configure-interface)
-  * [Renaming interface (temporary)](#renaming-interface-temporary)
   * [Wireshark &amp; tshark](#wireshark--tshark)
 * [Sources](#sources)
 
 ## Procedures, Notes, and Tips
-
 ### Network Manager CLI
 Using [nmcli](https://manpages.ubuntu.com/manpages/bionic/en/man1/nmcli.1.html) to list and connect to WiFi networks.
 
@@ -216,7 +215,6 @@ $ packetforge-ng -0 -a ap_mac -h our_mac -k 255.255.255.255 -l 255.255.255.255 -
 
 ### pyrit
 [pyrit](https://tools.kali.org/wireless-attacks/pyrit) is a WPA/WPA2-PSK tool that allows for creating a large database for authentication and cracking.
-
 Analyze a packet capture file.
 ```bash
 $ pyrit -r capture.cap analyze
@@ -226,10 +224,12 @@ Import passwords from a file into the database.
 ```bash
 $ pyrit -i /usr/share/wordlists/spy_vs_spy.words import_passwords
 ```
+
 Create a new ESSID (or `-b` for BSSID) into the database.
 ```bash
 $ pyrit -e "access_point" create_essid
 ```
+
 Batch process the database.
 ```bash
 $ pyrit batch
@@ -239,6 +239,21 @@ Attack all handshakes from the database.
 ```bash
 $ pyrit -r capture.cap --all-handshakes attack_db
 ```
+
+### hcxdumptool
+This technique requires a slightly different approach. Set up the interface below.
+```bash
+$ ip link set wlan1mon down
+$ iwconfig wlan1mon mode monitor
+$ ip link set wlan1mon up
+```
+
+Save the target BSSIDs to a file. Begin capturing with filtered parameters. 
+```bash
+$ hcxdumptool -i wlan1mon --enable_status -c 1 -o capture.pcapng --filterlist=filter_list --filtermode=2
+```
+
+asdf
 
 ### wifite
 [wifite](https://github.com/derv82/wifite2) is a tool that automates the process. Follow the instructions to cheat.
