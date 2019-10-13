@@ -258,13 +258,6 @@ $ airodump-ng wlan0mon --essid-regex "^(ap_name).*$"
 $ airodump-ng wlan0mon --essid-regex ^.*(one|two|three).*$
 ```
 
-### Force Channel
-Force wireless interface to a specific channel. Good for injection card.
-```bash
-$ iwconfig wlan1mon channel 6
-$ iwconfig wlan1mon channel 136
-```
-
 ### Configure interface
 Set link up/down.
 ```bash
@@ -276,7 +269,12 @@ Set modes monitor or managed.
 ```bash
 $ iwconfig wlan0mon mode managed
 $ iwconfig wlan0mon mode monitor
+```
 
+Force channels. Good for injection card.
+```bash
+$ iwconfig wlan1mon channel 6
+$ iwconfig wlan1mon channel 136
 ```
 
 ### Wireshark & tshark
