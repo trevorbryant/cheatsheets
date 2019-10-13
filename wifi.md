@@ -23,7 +23,7 @@
 * [Quick &amp; Useful](#quick--useful)
   * [Loops](#loops)
   * [Regex](#regex)
-  * [Force Channel](#force-channel)
+  * [Configure interface](#configure-interface)
   * [Renaming interface (temporary)](#renaming-interface-temporary)
   * [Wireshark &amp; tshark](#wireshark--tshark)
 * [Sources](#sources)
@@ -122,7 +122,7 @@ $ airmon-ng check kill
 ### aireplay-ng
 
 #### Quick summary
-Attack modes (Numbers can still be used):
+Use `-D` for 5ghz bands. Attack modes (Numbers can still be used):
 
   - `--deauth`or `-0`
   - `--fakeauth` or `-1`
@@ -275,6 +275,7 @@ Force channels. Good for injection card.
 ```bash
 $ iwconfig wlan1mon channel 6
 $ iwconfig wlan1mon channel 136
+$ iw dev wlan1mon set channel 6
 ```
 
 ### Wireshark & tshark
