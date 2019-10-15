@@ -241,7 +241,7 @@ $ pyrit -r capture.cap --all-handshakes attack_db
 ```
 
 ### hcxdumptool
-This technique requires a slightly different approach. Set up the interface below.
+This technique requires a slightly different approach and is used against PSK networks. Set up the interface below.
 ```bash
 $ ip link set wlan1mon down
 $ iwconfig wlan1mon mode monitor
