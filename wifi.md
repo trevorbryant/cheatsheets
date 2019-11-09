@@ -18,6 +18,7 @@
     * [KoreK chopchop attack](#korek-chopchop-attack)
     * [Fragmentation attack](#fragmentation-attack)
     * [packetforge-ng](#packetforge-ng)
+    * [airolib-ng](#airolib-ng)
   * [pyrit](#pyrit)
   * [hcxdumptool](#hcxdumptool)
     * [hcxpcaptool](#hcxpcaptool)
@@ -213,6 +214,9 @@ Additional example:
 ```bash
 $ packetforge-ng -0 -a ap_mac -h our_mac -k 255.255.255.255 -l 255.255.255.255 -y file.xor -w arp-request
 ```
+
+### airolib-ng
+_write stuff_
 
 ### pyrit
 [pyrit](https://tools.kali.org/wireless-attacks/pyrit) is a WPA/WPA2-PSK tool that allows for creating a large database for authentication and cracking.
