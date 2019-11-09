@@ -258,7 +258,7 @@ _Section not finished._
 #### hcxpcaptool
 Use `hcxpcaptool` to extract the PMK hash IDs.
 ```bash
-$ hcxpcaptool -z pmkidhash capture.cap
+$ hcxpcaptool -k pmkidhash capture.cap
 ```
 
 Run `hashcat` to attempt to decrypt the PMK hash IDs.
