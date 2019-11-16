@@ -39,7 +39,7 @@ List the available networks.
 $ nmcli device wifi list
 ```
 
-Connect to the available network.
+Connect to the available network. Add parameter `--ask` for password.
 ```bash
 $ nmcli connection up ap-name
 ```
