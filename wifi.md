@@ -215,8 +215,22 @@ Additional example:
 $ packetforge-ng -0 -a ap_mac -h our_mac -k 255.255.255.255 -l 255.255.255.255 -y file.xor -w arp-request
 ```
 
-### airolib-ng
-_write stuff_
+#### airolib-ng
+[airolib-ng](https://www.aircrack-ng.org/doku.php?id=airolib-ng) is the database to store essid's, captured PMKs, import password lists and accelerate handshake cracking.
+Create database and import essid file.
+```bash
+$ airolib-ng wctf --import essid wctf_essids
+```
+
+Import password list(s).
+```bash
+$ airolib-ng wctf --import passwd /usr/share/wordlists/cyberpunk.words
+```
+
+Begin batch processing of passwords to essid's.
+```bash
+$ airolib-ng wctf --batch
+```
 
 ### pyrit
 [pyrit](https://tools.kali.org/wireless-attacks/pyrit) is a WPA/WPA2-PSK tool that allows for creating a large database for authentication and cracking.
