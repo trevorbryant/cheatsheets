@@ -300,6 +300,7 @@ Filter target ESSIDs.
 ```bash
 $ airodump-ng wlan0mon --essid-regex "^(ap_name).*$"
 $ airodump-ng wlan0mon --essid-regex ^.*(one|two|three).*$
+$ airodump-ng wlan0mon --essid-regex "WCTF_([0-9]{1,2}|W.*)"
 ```
 
 ### Configure interface
