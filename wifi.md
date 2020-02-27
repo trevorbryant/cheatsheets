@@ -304,7 +304,7 @@ $ airodump-ng wlan0mon --essid-regex "WCTF_([0-9]{1,2}|W.*)"
 ```
 
 ### Configure interface
-Set link up/down.
+Set link up or down.
 ```bash
 $ ip link set wlan0mon down
 $ ip link set wlan0mon up
