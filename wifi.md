@@ -84,6 +84,9 @@ Steps to perform an attack on a WEP access point with no associated clients. The
   5) Inject the arp packet using `aireplay-ng -2`.
   6) Run `aircrack-ng` to obtain the WEP key.
 
+### WEP SKA with clients
+Steps to perform an attack on WEP access point configured to Shared-Key Authentication (SKA) with clients. 
+
 ### WPA/WPA2 with clients
 Steps to perform an attack on a WPA/WPA2 access point with clients. The pre-shared (PSK) must be in the wordlists used.
 
